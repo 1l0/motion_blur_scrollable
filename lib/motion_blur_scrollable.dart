@@ -4,7 +4,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:scroll_experiments/umbragen/motion_blur.dart';
+
+import 'package:scroll_experiments/motion_blur.dart';
 
 class ScrollableBlur extends StatefulWidget {
   const ScrollableBlur({
@@ -117,7 +118,7 @@ class _ScrollableBlurState extends State<ScrollableBlur> {
         if (image != null && blurAmount > 0.0)
           IgnorePointer(
             child: MotionBlur(
-              tInput: image,
+              image: image,
               delta: blurAmount,
               angle: pi / 2,
             ),

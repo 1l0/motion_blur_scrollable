@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
+
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:scroll_experiments/umbragen/motion_blur.dart';
+
+import 'package:scroll_experiments/motion_blur.dart';
 
 class MotionBlurDemoWidget extends StatefulWidget {
   const MotionBlurDemoWidget({super.key});
@@ -37,14 +39,13 @@ class _GlowWidgetState extends State<MotionBlurDemoWidget> {
 
   double delta = 0;
 
-
   void handleVerticalDragUpdate(DragUpdateDetails details, double height) {
-    final exp =  (details.localPosition.dy / height);
+    final exp = details.localPosition.dy / height;
 
     final exx = 10 ^ (1000 * exp).ceil();
 
     setState(() {
-      delta= 1 / exx;
+      delta = 1 / exx;
     });
   }
 
@@ -58,19 +59,18 @@ class _GlowWidgetState extends State<MotionBlurDemoWidget> {
 
     return Center(
       child: AspectRatio(
-        aspectRatio: barcelos.width/ barcelos.height,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return GestureDetector(
-              onVerticalDragUpdate: (details) => handleVerticalDragUpdate(details, constraints.maxHeight),
-              child: MotionBlur(
-                tInput: barcelos,
-                delta: delta,
-                angle: pi / 1,
-              ),
-            );
-          }
-        ),
+        aspectRatio: barcelos.width / barcelos.height,
+        child: LayoutBuilder(builder: (context, constraints) {
+          return GestureDetector(
+            onVerticalDragUpdate: (details) =>
+                handleVerticalDragUpdate(details, constraints.maxHeight),
+            child: MotionBlur(
+              image: barcelos,
+              delta: delta,
+              angle: pi / 1,
+            ),
+          );
+        }),
       ),
     );
   }

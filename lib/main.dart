@@ -10,9 +10,12 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Scrollable Demo',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
       home: Scaffold(
         body: Content(),
       ),
@@ -34,9 +37,7 @@ class Content extends StatelessWidget {
             child: ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 if (index % 5 == 0) {
-                  return const Title(
-                    child: Text('Oslo photos'),
-                  );
+                  return const Title('Oslo photos');
                 }
                 return RandomOsloPhoto(
                   key: ValueKey(index),
@@ -82,24 +83,22 @@ class _RandomOsloPhotoState extends State<RandomOsloPhoto>
 }
 
 class Title extends StatelessWidget {
-  const Title({super.key, required this.child});
+  const Title(this.title, {super.key});
 
-  final Widget child;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme;
+    final style = Theme.of(context).textTheme.titleMedium!.copyWith(
+          fontWeight: FontWeight.w900,
+          letterSpacing: 2,
+        );
 
-    return DefaultTextStyle.merge(
-      style: theme.headline1!.merge(const TextStyle(
-        fontWeight: FontWeight.w900,
-        color: Color(0xFF000000),
-        letterSpacing: -12,
-        height: 0.9
-      ),),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
-        child: child,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
+      child: Text(
+        title,
+        style: style,
       ),
     );
   }

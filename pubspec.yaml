@@ -1,11 +1,11 @@
-name: scroll_experiments
-description: A new Flutter project.
-version: 1.1.0
-publish_to: none
+name: motion_blur_scrollable
+description: "Motion blur for scrollable widgets"
+version: 1.0.0
+repository: "https://github.com/1l0/motion_blur_scrollable"
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: ^3.21.0
+  flutter: ^3.0.0
 
 dependencies:
   flutter:
@@ -14,10 +14,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^4.0.0
 
 flutter:
-  uses-material-design: true
-  assets:
-    - assets/
   shaders:
-    - shaders/motion_blur.frag
+    - assets/shaders/motion_blur.frag

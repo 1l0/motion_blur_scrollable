@@ -32,20 +32,17 @@ class Content extends StatelessWidget {
       child: SizedBox(
         width: 600,
         child: ScrollableBlur(
-          child: ColoredBox(
-            color: const Color(0xFFFFFFFF),
-            child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                if (index % 5 == 0) {
-                  return const Title('Oslo photos');
-                }
-                return RandomOsloPhoto(
-                  key: ValueKey(index),
-                  index: index,
-                );
-              },
-              itemCount: 100,
-            ),
+          child: ListView.builder(
+            itemBuilder: (BuildContext context, int index) {
+              if (index % 5 == 0) {
+                return const Title('Oslo photos');
+              }
+              return RandomOsloPhoto(
+                key: ValueKey(index),
+                index: index,
+              );
+            },
+            itemCount: 100,
           ),
         ),
       ),

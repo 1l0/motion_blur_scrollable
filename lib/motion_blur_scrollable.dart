@@ -27,7 +27,7 @@ class _ScrollableBlurState extends State<ScrollableBlur> {
   double lastPixels = 0;
 
   double blurAmount = 0;
-  double blueAngle = pi / 2;
+  double blurAngle = pi / 2;
 
   @override
   void didChangeDependencies() {
@@ -68,7 +68,7 @@ class _ScrollableBlurState extends State<ScrollableBlur> {
         final deltaPixels = (pixels - lastPixels).abs();
         final velo = deltaPixels / (deltaT * 0.0001);
         blurAmount = velo > 1.0 ? (deltaPixels / 800) : 0.0;
-        blueAngle = notification.metrics.axis == Axis.horizontal ? pi : pi / 2;
+        blurAngle = notification.metrics.axis == Axis.horizontal ? pi : pi / 2;
       });
     }
 
@@ -120,7 +120,7 @@ class _ScrollableBlurState extends State<ScrollableBlur> {
             child: MotionBlur(
               image: image,
               delta: blurAmount,
-              angle: pi / 2,
+              angle: blurAngle,
             ),
           )
       ],

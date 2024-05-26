@@ -28,7 +28,6 @@ class MotionBlur extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('$_delta');
     return FutureBuilder<FragmentShader>(
       future: _shader(),
       builder: (context, snapshot) {

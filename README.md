@@ -4,7 +4,7 @@
 
 A fork of [motion_blur_scrollable](https://github.com/renancaraujo/motion_blur_scrollable) as a package.
 
-![example](./docs/example.gif)
+![example](https://github.com/1l0/motion_blur_scrollable/blob/main/docs/example.gif?raw=true)
 
 ## Usage
 

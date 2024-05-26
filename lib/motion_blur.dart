@@ -46,19 +46,51 @@ class MotionBlur extends StatelessWidget {
 
         return LayoutBuilder(
           builder: (context, constraints) {
-            return ShaderMask(
-                blendMode: BlendMode.src,
-                shaderCallback: (rect) {
-                  return shader
-                    ..setFloat(0, rect.size.width)
-                    ..setFloat(1, rect.size.height)
-                    ..setFloat(2, _delta)
-                    ..setFloat(3, _angle)
-                    ..setImageSampler(0, _image);
-                });
+            return CustomPaint(
+              size: constraints.biggest,
+              painter: _ShaderPainter(
+                shader: shader,
+                image: _image,
+                delta: _delta,
+                angle: _angle,
+              ),
+            );
           },
         );
       },
     );
+  }
+}
+
+class _ShaderPainter extends CustomPainter {
+  _ShaderPainter({
+    required this.shader,
+    required this.image,
+    required this.delta,
+    required this.angle,
+  });
+  final FragmentShader shader;
+  final Image image;
+  final double delta;
+  final double angle;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    shader.setFloat(0, size.width);
+    shader.setFloat(1, size.height);
+    shader.setFloat(2, delta);
+    shader.setFloat(3, angle);
+    shader.setImageSampler(0, image);
+
+    final paint = Paint()..shader = shader;
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }

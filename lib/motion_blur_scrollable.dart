@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui' as ui;
+import 'dart:ui';
 
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
+import 'package:flutter/widgets.dart' hide Image;
 
 import 'package:scroll_experiments/motion_blur.dart';
+
+const pi_half = 1.570796326794897;
 
 class ScrollableBlur extends StatefulWidget {
   const ScrollableBlur({
@@ -22,12 +24,27 @@ class ScrollableBlur extends StatefulWidget {
 class _ScrollableBlurState extends State<ScrollableBlur> {
   final _boundaryKey = GlobalKey();
 
-  ui.Image? image;
+  Image? image;
   int lastTS = DateTime.now().millisecondsSinceEpoch;
   double lastPixels = 0;
 
-  double blurAmount = 0;
-  double blurAngle = pi / 2;
+  double delta = 0;
+  double angle = pi_half;
+
+  FragmentShader? shader;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(loadShader());
+  }
+
+  Future<void> loadShader() async {
+    final program = await FragmentProgram.fromAsset('shaders/motion_blur.frag');
+    setState(() {
+      shader = program.fragmentShader();
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -42,34 +59,32 @@ class _ScrollableBlurState extends State<ScrollableBlur> {
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
     final boundary = _boundaryKey.currentContext!.findRenderObject()!
         as RenderRepaintBoundary;
-    final im = await boundary.toImage(pixelRatio: pixelRatio);
+    final m = await boundary.toImage(pixelRatio: pixelRatio);
+    captureLock = false;
     setState(() {
-      captureLock = false;
-      image = im;
+      image = m;
     });
   }
 
-  bool onScrollNotification(ScrollMetricsNotification notification) {
+  bool onScroll(ScrollMetricsNotification notification) {
     if (notification.depth != 0) {
       return false;
     }
 
     final ts = DateTime.now().millisecondsSinceEpoch;
     final deltaT = ts - lastTS;
+
     if (deltaT < 12) return false;
+
     final pixels = notification.metrics.pixels;
 
     if (notification.metrics.atEdge) {
-      setState(() {
-        blurAmount = 0.0;
-      });
+      delta = 0.0;
     } else {
-      setState(() {
-        final deltaPixels = (pixels - lastPixels).abs();
-        final velo = deltaPixels / (deltaT * 0.0001);
-        blurAmount = velo > 1.0 ? (deltaPixels / 800) : 0.0;
-        blurAngle = notification.metrics.axis == Axis.horizontal ? pi : pi / 2;
-      });
+      final deltaPixels = (pixels - lastPixels).abs();
+      final velo = deltaPixels / (deltaT * 0.0001);
+      delta = velo > 1.0 ? (deltaPixels / 800) : 0.0;
+      angle = notification.metrics.axis == Axis.horizontal ? pi : pi_half;
     }
 
     lastTS = ts;
@@ -77,50 +92,46 @@ class _ScrollableBlurState extends State<ScrollableBlur> {
 
     Timer(
       const Duration(milliseconds: 60),
-      afterScrollCheck,
+      afterScroll,
     );
 
     return false;
   }
 
-  void afterScrollCheck() {
-    if (blurAmount == 0.0) {
-      return;
-    }
+  void afterScroll() {
+    unawaited(captureImage());
     final ts = DateTime.now().millisecondsSinceEpoch;
     final deltaT = ts - lastTS;
 
     if (deltaT >= 60) {
-      setState(() {
-        blurAmount = 0.0;
-      });
+      delta = 0.0;
     }
+  }
+
+  void updateShader() {
+    shader?.setFloat(2, delta);
+    shader?.setFloat(3, angle);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (blurAmount != 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => captureImage());
-    }
-
-    final image = this.image;
+    updateShader();
 
     return Stack(
       fit: StackFit.passthrough,
       children: [
         NotificationListener<ScrollMetricsNotification>(
-          onNotification: onScrollNotification,
+          onNotification: onScroll,
           child: RepaintBoundary(
             key: _boundaryKey,
             child: widget.child,
           ),
         ),
-        if (image != null && blurAmount > 0.0)
+        if (shader != null && image != null)
           IgnorePointer(
             child: MotionBlur(
-              image: image,
-              delta: blurAmount,
-              angle: blurAngle,
+              image: image!,
+              shader: shader!,
             ),
           )
       ],

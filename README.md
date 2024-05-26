@@ -1,3 +1,5 @@
+[![pub package](https://img.shields.io/pub/v/motion_blur_scrollable.svg)](https://pub.dev/packages/motion_blur_scrollable)
+
 # Motion blur scrollable
 
 A fork of [motion_blur_scrollable](https://github.com/renancaraujo/motion_blur_scrollable) as a package.

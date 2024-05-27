@@ -1,3 +1,9 @@
+## 1.4.0
+* Simplify shader.
+* Sync image.
+* Tweak params.
+* Fix iOS light theme glitch on shader.
+
 ## 1.3.3
 
 * Example gif in pub.dev.

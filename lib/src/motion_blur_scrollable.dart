@@ -93,7 +93,6 @@ class _MotionBlurScrollableState extends State<MotionBlurScrollable> {
     } else {
       final deltaPixels = (pixels - lastPixels).abs();
       final velo = deltaPixels / (deltaT * 0.1);
-      debugPrint(velo.toString());
       delta = velo > 1.0 ? (deltaPixels / 800) : 0.0;
       angle = notification.metrics.axis == Axis.horizontal ? pi : _piHalf;
     }

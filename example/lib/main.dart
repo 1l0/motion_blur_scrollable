@@ -34,7 +34,7 @@ class Content extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               if (index % 5 == 0) {
-                return const Title('Ranmdom photos');
+                return const Title('Photos');
               }
               return RandomOsloPhoto(
                 key: ValueKey(index),

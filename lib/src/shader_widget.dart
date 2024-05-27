@@ -30,7 +30,7 @@ class ShaderWidget extends StatelessWidget {
 }
 
 class _ShaderPainter extends CustomPainter {
-  _ShaderPainter({
+  const _ShaderPainter({
     required this.shader,
     required this.image,
   });
@@ -41,15 +41,10 @@ class _ShaderPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     shader.setFloat(0, size.width);
     shader.setFloat(1, size.height);
-    // shader.setFloat(2, delta);
-    // shader.setFloat(3, angle);
     shader.setImageSampler(0, image);
 
     final paint = Paint()..shader = shader;
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      paint,
-    );
+    canvas.drawRect(Offset.zero & size, paint);
   }
 
   @override

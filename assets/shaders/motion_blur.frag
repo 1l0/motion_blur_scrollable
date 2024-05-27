@@ -1,6 +1,6 @@
 #version 460 core
 
-// precision mediump float;
+precision highp float;
 
 #include <flutter/runtime_effect.glsl>
 

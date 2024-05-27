@@ -34,7 +34,7 @@ class Content extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               if (index % 5 == 0) {
-                return const Title('Oslo photos');
+                return const Title('Ranmdom photos');
               }
               return RandomOsloPhoto(
                 key: ValueKey(index),
@@ -58,10 +58,10 @@ class RandomOsloPhoto extends StatefulWidget {
   final int index;
 
   @override
-  State<RandomOsloPhoto> createState() => _RandomOsloPhotoState();
+  State<RandomOsloPhoto> createState() => _RandomPhotoState();
 }
 
-class _RandomOsloPhotoState extends State<RandomOsloPhoto>
+class _RandomPhotoState extends State<RandomOsloPhoto>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class _RandomOsloPhotoState extends State<RandomOsloPhoto>
     return AspectRatio(
       aspectRatio: 4 / 3,
       child: Image.network(
-        'https://source.unsplash.com/800x600/?vikings,oslo,${widget.index}',
+        'https://picsum.photos/id/${widget.index}/800/600',
       ),
     );
   }

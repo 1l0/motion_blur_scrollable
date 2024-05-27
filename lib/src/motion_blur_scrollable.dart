@@ -50,13 +50,26 @@ class _MotionBlurScrollableState extends State<MotionBlurScrollable> {
 
   bool captureLock = false;
 
-  Future<void> captureImage() async {
+  Future<void> captureImageAsync() async {
     if (captureLock) return;
     captureLock = true;
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
     final boundary = _boundaryKey.currentContext!.findRenderObject()!
         as RenderRepaintBoundary;
     final m = await boundary.toImage(pixelRatio: pixelRatio);
+    captureLock = false;
+    setState(() {
+      image = m;
+    });
+  }
+
+  void captureImage() {
+    if (captureLock) return;
+    captureLock = true;
+    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final boundary = _boundaryKey.currentContext!.findRenderObject()!
+        as RenderRepaintBoundary;
+    final m = boundary.toImageSync(pixelRatio: pixelRatio);
     captureLock = false;
     setState(() {
       image = m;
@@ -79,13 +92,16 @@ class _MotionBlurScrollableState extends State<MotionBlurScrollable> {
       delta = 0.0;
     } else {
       final deltaPixels = (pixels - lastPixels).abs();
-      final velo = deltaPixels / (deltaT * 0.0001);
+      final velo = deltaPixels / (deltaT * 0.1);
+      debugPrint(velo.toString());
       delta = velo > 1.0 ? (deltaPixels / 800) : 0.0;
       angle = notification.metrics.axis == Axis.horizontal ? pi : _piHalf;
     }
 
     lastTS = ts;
     lastPixels = pixels;
+
+    captureImage();
 
     Timer(
       const Duration(milliseconds: 60),
@@ -96,12 +112,13 @@ class _MotionBlurScrollableState extends State<MotionBlurScrollable> {
   }
 
   void afterScroll() {
-    unawaited(captureImage());
+    // unawaited(captureImageAsync());
     final ts = DateTime.now().millisecondsSinceEpoch;
     final deltaT = ts - lastTS;
 
     if (deltaT >= 60) {
       delta = 0.0;
+      setState(() {});
     }
   }
 

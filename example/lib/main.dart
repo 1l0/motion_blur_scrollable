@@ -69,7 +69,7 @@ class _RandomPhotoState extends State<RandomOsloPhoto>
     return AspectRatio(
       aspectRatio: 4 / 3,
       child: Image.network(
-        'https://picsum.photos/id/${widget.index}/800/600',
+        'https://picsum.photos/seed/${widget.index}/800/600',
       ),
     );
   }

@@ -8,8 +8,7 @@ import 'package:flutter/widgets.dart' hide Image;
 import 'shader_widget.dart';
 
 const _piHalf = 1.570796326794897;
-const _assetKey =
-    'packages/motion_blur_scrollable/assets/shaders/motion_blur.frag';
+const _assetKey = 'packages/motion_blur_scrollable/shaders/motion_blur.frag';
 
 class MotionBlurScrollable extends StatefulWidget {
   const MotionBlurScrollable({

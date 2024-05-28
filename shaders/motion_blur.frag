@@ -11,9 +11,9 @@ uniform sampler2D u_texture;
 
 out vec4 fragColor;
 
-// float random(vec3 scale, float seed, vec3 xyz) {
-//     return fract(sin(dot(xyz + seed, scale)) * 43758.5453 + seed);
-// }
+float random(vec3 scale, float seed, vec3 xyz) {
+    return fract(sin(dot(xyz + seed, scale)) * 43758.5453 + seed);
+}
 
 void main() {
     vec2 fragCoord = FlutterFragCoord().xy;
@@ -21,10 +21,10 @@ void main() {
     vec4 color = vec4(0.0);
     float total = 0.0;
     vec2 delta = u_delta * vec2(cos(u_angle), sin(u_angle));
-    // float offset = random(vec3(12.9898, 78.233, 151.7182), 0.0, vec3(fragCoord, 1000.0));
+    float offset = random(vec3(12.9898, 78.233, 151.7182), 0.0, vec3(fragCoord, 1000.0));
     for(float t = -30.0; t <= 30.0; t++) {
-        // float percent = (t + offset - 0.5) / 30.0;
-        float percent = t / 30.0;
+        float percent = (t + offset - 0.5) / 30.0;
+        // float percent = t / 30.0;
         float weight = 1.0 - abs(percent);
         vec4 col = texture(u_texture, uv + delta * percent);
         col.rgb *= col.a;

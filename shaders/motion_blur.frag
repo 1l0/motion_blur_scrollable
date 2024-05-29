@@ -24,7 +24,6 @@ void main() {
     float offset = random(vec3(12.9898, 78.233, 151.7182), 0.0, vec3(fragCoord, 1000.0));
     for(float t = -30.0; t <= 30.0; t++) {
         float percent = (t + offset - 0.5) / 30.0;
-        // float percent = t / 30.0;
         float weight = 1.0 - abs(percent);
         vec4 col = texture(u_texture, uv + delta * percent);
         col.rgb *= col.a;
@@ -35,5 +34,6 @@ void main() {
     if(total == 0.)
         total = 1.;
     fragColor = color / total;
-    // fragColor.rgb = fragColor.rgb / fragColor.a + 0.01;
+    float adj = 1.0 / fragColor.a;
+    fragColor = fragColor * adj;
 }

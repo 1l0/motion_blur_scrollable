@@ -16,23 +16,19 @@ class MotionBlurScrollable extends StatefulWidget {
     required this.child,
   });
 
-  final Widget child;
+  final ScrollView child;
 
   @override
   State<MotionBlurScrollable> createState() => _MotionBlurScrollableState();
 }
 
 class _MotionBlurScrollableState extends State<MotionBlurScrollable> {
-  final _boundaryKey = GlobalKey();
+  final boundaryKey = GlobalKey();
 
   Image? image;
-  int lastTS = DateTime.now().millisecondsSinceEpoch;
-  double lastPixels = 0;
-
+  FragmentShader? shader;
   double delta = 0;
   double angle = _piHalf;
-
-  FragmentShader? shader;
 
   @override
   void initState() {
@@ -47,77 +43,38 @@ class _MotionBlurScrollableState extends State<MotionBlurScrollable> {
     });
   }
 
-  bool captureLock = false;
-
-  Future<void> captureImageAsync() async {
-    if (captureLock) return;
-    captureLock = true;
-    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final boundary = _boundaryKey.currentContext!.findRenderObject()!
-        as RenderRepaintBoundary;
-    final m = await boundary.toImage(pixelRatio: pixelRatio);
-    captureLock = false;
-    setState(() {
-      image = m;
-    });
-  }
-
   void captureImage() {
-    if (captureLock) return;
-    captureLock = true;
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final boundary = _boundaryKey.currentContext!.findRenderObject()!
-        as RenderRepaintBoundary;
-    final m = boundary.toImageSync(pixelRatio: pixelRatio);
-    captureLock = false;
+    final boundary = boundaryKey.currentContext?.findRenderObject()
+        as RenderRepaintBoundary?;
+    final m = boundary?.toImageSync(pixelRatio: pixelRatio);
     setState(() {
       image = m;
     });
   }
 
-  bool onScroll(ScrollMetricsNotification notification) {
-    if (notification.depth != 0) {
+  /// A timer is needed due to an unresolved bug that [ScrollEndNotification]
+  /// would be emitted on every scroll update.
+  /// https://github.com/flutter/flutter/issues/44732#issuecomment-862405208
+  Timer? scrollEndTimer;
+
+  bool onScroll(ScrollUpdateNotification scroll) {
+    if (scroll.depth != 0) {
       return false;
     }
-
-    final ts = DateTime.now().millisecondsSinceEpoch;
-    final deltaT = ts - lastTS;
-
-    if (deltaT < 12) return false;
-
-    final pixels = notification.metrics.pixels;
-
-    if (notification.metrics.atEdge) {
-      delta = 0.0;
-    } else {
-      final deltaPixels = (pixels - lastPixels).abs();
-      final velo = deltaPixels / (deltaT * 0.1);
-      delta = velo > 1.0 ? (deltaPixels / 800) : 0.0;
-      angle = notification.metrics.axis == Axis.horizontal ? pi : _piHalf;
+    if (scroll.scrollDelta == null) {
+      return false;
     }
-
-    lastTS = ts;
-    lastPixels = pixels;
-
-    captureImage();
-
-    Timer(
-      const Duration(milliseconds: 60),
-      afterScroll,
-    );
-
-    return false;
-  }
-
-  void afterScroll() {
-    // unawaited(captureImageAsync());
-    final ts = DateTime.now().millisecondsSinceEpoch;
-    final deltaT = ts - lastTS;
-
-    if (deltaT >= 60) {
-      delta = 0.0;
+    final deltaPixels = scroll.scrollDelta!.abs();
+    delta = deltaPixels / 1000;
+    angle = scroll.metrics.axis == Axis.horizontal ? pi : _piHalf;
+    scrollEndTimer?.cancel();
+    scrollEndTimer = Timer(const Duration(milliseconds: 50), () {
+      delta = 0;
       setState(() {});
-    }
+    });
+    captureImage();
+    return true;
   }
 
   void updateShader() {
@@ -132,14 +89,14 @@ class _MotionBlurScrollableState extends State<MotionBlurScrollable> {
     return Stack(
       fit: StackFit.passthrough,
       children: [
-        NotificationListener<ScrollMetricsNotification>(
+        NotificationListener<ScrollUpdateNotification>(
           onNotification: onScroll,
           child: RepaintBoundary(
-            key: _boundaryKey,
+            key: boundaryKey,
             child: widget.child,
           ),
         ),
-        if (shader != null && image != null)
+        if (shader != null && image != null && delta > 0)
           IgnorePointer(
             child: ShaderWidget(
               image: image!,

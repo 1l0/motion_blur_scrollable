@@ -66,7 +66,7 @@ class _MotionBlurScrollableState extends State<MotionBlurScrollable> {
       return false;
     }
     final deltaPixels = scroll.scrollDelta!.abs();
-    delta = deltaPixels / 1000;
+    delta = deltaPixels / 4000;
     angle = scroll.metrics.axis == Axis.horizontal ? pi : _piHalf;
     scrollEndTimer?.cancel();
     scrollEndTimer = Timer(const Duration(milliseconds: 50), () {

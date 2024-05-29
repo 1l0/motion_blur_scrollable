@@ -22,8 +22,8 @@ void main() {
     float total = 0.0;
     vec2 delta = u_delta * vec2(cos(u_angle), sin(u_angle));
     float offset = random(vec3(12.9898, 78.233, 151.7182), 0.0, vec3(fragCoord, 1000.0));
-    for(float t = -30.0; t <= 30.0; t++) {
-        float percent = (t + offset - 0.5) / 30.0;
+    for(float t = -15.0; t <= 15.0; t++) {
+        float percent = (t + offset - 0.5) / 15.0;
         float weight = 1.0 - abs(percent);
         vec4 col = texture(u_texture, uv + delta * percent);
         col.rgb *= col.a;

@@ -1,3 +1,7 @@
+## 1.5.0
+* Finally perfect color.
+* Null aware.
+
 ## 1.4.0
 * Simplify shader.
 * Sync image.

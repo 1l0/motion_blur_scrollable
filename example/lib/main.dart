@@ -36,7 +36,7 @@ class Content extends StatelessWidget {
               if (index % 5 == 0) {
                 return const Title('Photos');
               }
-              return RandomOsloPhoto(
+              return RandomPhoto(
                 key: ValueKey(index),
                 index: index,
               );
@@ -49,8 +49,8 @@ class Content extends StatelessWidget {
   }
 }
 
-class RandomOsloPhoto extends StatefulWidget {
-  const RandomOsloPhoto({
+class RandomPhoto extends StatefulWidget {
+  const RandomPhoto({
     super.key,
     required this.index,
   });
@@ -58,10 +58,10 @@ class RandomOsloPhoto extends StatefulWidget {
   final int index;
 
   @override
-  State<RandomOsloPhoto> createState() => _RandomPhotoState();
+  State<RandomPhoto> createState() => _RandomPhotoState();
 }
 
-class _RandomPhotoState extends State<RandomOsloPhoto>
+class _RandomPhotoState extends State<RandomPhoto>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {

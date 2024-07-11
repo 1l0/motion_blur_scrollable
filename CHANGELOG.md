@@ -1,3 +1,7 @@
+## 1.6.0
+* Remove custom shaders.
+* Use ImageFiltered.
+
 ## 1.5.0
 * Finally perfect color.
 * Null aware.

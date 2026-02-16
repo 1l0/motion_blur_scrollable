@@ -8,7 +8,7 @@ A fork of [motion_blur_scrollable](https://github.com/renancaraujo/motion_blur_s
 
 ## Usage
 
-Use class extending [ScrollView](https://api.flutter.dev/flutter/widgets/ScrollView-class.html) as a child in `MotionBlurScrollable`.
+Use a class extending [ScrollView](https://api.flutter.dev/flutter/widgets/ScrollView-class.html) as a child of `MotionBlurScrollable`.
 
 ```dart
 MotionBlurScrollable(

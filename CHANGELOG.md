@@ -1,3 +1,6 @@
+## 1.6.1
+* Fix README.
+
 ## 1.6.0
 * Remove custom shaders.
 * Use ImageFiltered.

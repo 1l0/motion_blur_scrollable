@@ -1,6 +1,6 @@
 name: motion_blur_scrollable
 description: "Motion blur for scrolling widgets"
-version: 1.6.0
+version: 1.6.1
 repository: "https://github.com/1l0/motion_blur_scrollable"
 
 environment:
